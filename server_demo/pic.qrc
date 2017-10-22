@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>logo_server.ico</file>
+        <file>logo.ico</file>
+        <file>logo_L.ico</file>
+        <file>logo_R.ico</file>
+    </qresource>
+</RCC>

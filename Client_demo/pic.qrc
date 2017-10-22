@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>logo_R.ico</file>
+        <file>user_pic.ico</file>
+        <file>cover.jpg</file>
+        <file>cloud_user.ico</file>
+    </qresource>
+</RCC>

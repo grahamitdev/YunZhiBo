@@ -22,7 +22,7 @@ public:
 
 signals:    
     void sigWriteToClient(QTcpSocket *socket,Pack pack);
-    void sigSendPortByBroad(Pack pack);
+    void sigSendPortByBroad(Pack pack);//全局广播
 public slots:
     void onReadyRead();
 private:

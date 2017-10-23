@@ -31,7 +31,9 @@ SOURCES += \
     Main.cpp \
     User.cpp \
     DialogLive.cpp \
-    WidgetLive.cpp
+    WidgetLive.cpp \
+    WidgetUser.cpp \
+    WidgetLook.cpp
 
 HEADERS += \
         MainWindow.h \
@@ -39,14 +41,18 @@ HEADERS += \
     Packet.h \
     User.h \
     DialogLive.h \
-    WidgetLive.h
+    WidgetLive.h \
+    WidgetUser.h \
+    WidgetLook.h
 
 FORMS += \
         MainWindow.ui \
     RegistWidget.ui \
     DialogRegist.ui \
     DialogLive.ui \
-    WidgetLive.ui
+    WidgetLive.ui \
+    WidgetUser.ui \
+    WidgetLook.ui
 
 RESOURCES += \
     icon.qrc \

@@ -22,6 +22,9 @@ User::User(int type, QString name, QString str)
     case TYPE_MSG:
         message = str;
         break;
+    case TYPE_CREATEROOM:
+        info = str;
+        break;
     default:
         break;
     }

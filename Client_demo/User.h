@@ -8,7 +8,7 @@ public:
     User(QString name,QString passwd,QString question,QString answer,int points);
 
     User(int type,QString name,QString passwd,QString question,QString answer);
-    User(int type, QString name, QString str);
+    User(int type, QString name, QString str);//密码,弹幕,创建房间
     User(int type,QString info);
     User(int type,QString name,unsigned short int port);
 

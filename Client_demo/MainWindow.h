@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include "DialogRegist.h"
 #include "DialogLive.h"
+#include "WidgetUser.h"
 #include "WidgetLive.h"
 #include "User.h"
 namespace Ui {
@@ -33,6 +34,7 @@ private slots:
 private:
     Ui::MainWindow *ui;    
     DialogRegist *dialogRegist;
+    WidgetUser *widgetUser;
     DialogLive *dialogLive;
     WidgetLive *widgetLive;
 

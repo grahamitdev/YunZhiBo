@@ -11,16 +11,22 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);    
-
+    //注册窗口
     dialogRegist = new DialogRegist(this);
     dialogRegist->setWindowModality(Qt::ApplicationModal);
     connect(dialogRegist,SIGNAL(sigWrite(int,User)),this,SLOT(onSigWrite(int,User)));
-    dialogLive = new DialogLive(this);
-    dialogLive ->setWindowModality(Qt::ApplicationModal);
-    connect(dialogLive,SIGNAL(sigWrite(int,User)),this,SLOT(onSigWrite(int,User)));
+    //用户窗口
+    widgetUser = new WidgetUser(this);
+    connect(widgetUser,SIGNAL(sigWrite(int,User)),this,SLOT(onSigWrite(int,User)));
 
+//    //直播窗口，可能不在这里创建
+//    dialogLive = new DialogLive(this);
+//    dialogLive ->setWindowModality(Qt::ApplicationModal);
+//    connect(dialogLive,SIGNAL(sigWrite(int,User)),this,SLOT(onSigWrite(int,User)));
+
+    //测试
     widgetLive = new WidgetLive();
-
+    //创建套接字
     ip = "127.0.0.1";
     port = 8888;
     socket = new QTcpSocket(this);
@@ -36,7 +42,8 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete widgetLive;
+    delete widgetLive;//直播
+    delete widgetUser;//用户
 }
 
 void MainWindow::onError(QAbstractSocket::SocketError socketError)
@@ -46,40 +53,50 @@ void MainWindow::onError(QAbstractSocket::SocketError socketError)
 
 void MainWindow::on_btn_send_clicked()
 {
-    Pack pack;
-    pack.type = TYPE_MSG;
-    strcpy(pack.message,ui->le_data->text().toLocal8Bit().data());
-    socket->write((char *)&pack,sizeof(Pack));
-    ui->textEdit->append("send:"+ui->le_data->text());
+//    Pack pack;
+//    pack.type = TYPE_MSG;
+//    strcpy(pack.message,ui->le_data->text().toLocal8Bit().data());
+//    socket->write((char *)&pack,sizeof(Pack));
+//    ui->textEdit->append("send:"+ui->le_data->text());
+    //发弹幕现在放到直播界面去获取
 }
 
 void MainWindow::onReadyRead()
 {
     Pack pack;
-    socket->read((char *)&pack,sizeof(Pack));
+    socket->read((char *)&pack,sizeof(Pack));    
     int type = pack.type;
+    QString name = QString::fromLocal8Bit(pack.name);
+    QString passwd = QString::fromLocal8Bit(pack.passwd);
+    QString question = QString::fromLocal8Bit(pack.question);
+    QString answer = QString::fromLocal8Bit(pack.answer);
+    QString message = QString::fromLocal8Bit(pack.message);
+    QString info = QString::fromLocal8Bit(pack.info);
+    unsigned short int port = pack.port;
+    int points = 0;
     switch (type) {
     case TYPE_REG_SUCCESS:
         dialogRegist->hide();
-        QMessageBox::information(dialogRegist,"注册",pack.info);
-        ui->textEdit->append(pack.info);
+        QMessageBox::information(dialogRegist,"注册",info);
+        ui->textEdit->append(info);
         break;
     case TYPE_REG_ERROR:
-        QMessageBox::critical(dialogRegist,"注册",pack.info);
-        ui->textEdit->append(pack.info);
+        QMessageBox::critical(dialogRegist,"注册",info);
+        ui->textEdit->append(info);
         break;
     case TYPE_LOG_SUCCESS:
         //QMessageBox::information(this,"登录",pack.info);
-        ui->textEdit->append(pack.info);
+        ui->textEdit->append(info);
         this->hide();
-        dialogLive->show();//打开直播界面
+        widgetUser->setName(name);
+        widgetUser->show();//打开直播界面
         break;
     case TYPE_LOG_ERROR:
-        QMessageBox::critical(this,"登录",pack.info);
-        ui->textEdit->append(pack.info);
+        QMessageBox::critical(this,"登录",info);
+        ui->textEdit->append(info);
         break;
     case TYPE_PORT:
-        ui->textEdit->append(pack.info);;
+        ui->textEdit->append(info);;
         break;
     default:
         break;
@@ -139,7 +156,10 @@ void MainWindow::onSigWrite(int type, User user)
         socket->write((char *)&pack,sizeof(Pack));
         ui->textEdit->append("广播PORT已经发往服务器");
         break;
-
+    case TYPE_CREATEROOM:
+        pack.type = type;
+        strcpy(pack.name,user.getName().toLocal8Bit().data());
+        //pack.info = ty
 
     default:
         break;

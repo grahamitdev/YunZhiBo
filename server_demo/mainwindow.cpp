@@ -106,7 +106,6 @@ void MainWindow::onNewConnection()
     sm->addSocket(client);//此处获取单例对象只是为了压一个套接字进去，没有别的作用
 
     ClientSocket *cs = new ClientSocket(client);//socket找cs作代理
-
     //有了deleterLater()是否需要手动释放,没有deleterLater()是否需要手动释放
     QThread *thread = new QThread(this);
     //主线程从此刻开始监听cs对象从thread线程中发出的sigWrite(QTcpSocket*,const char*,int)信号
@@ -134,14 +133,14 @@ void MainWindow::onNewConnection()
 
 //主线程监听到写套接字信号
 
-
+//Tcp回复单个客户端的操作结果
 void MainWindow::onSigWriteToClient(QTcpSocket *socket, Pack pack)
 {
     ui->te_debug->append("MainThread receive thread signal:"+ QString(pack.info));
     socket->write((char *)&pack,sizeof(Pack));
     ui->te_debug->append("MainThread has forward pack");
 }
-
+//Udp广播大消息
 void MainWindow::onSigSendPortByBroad(Pack pack)
 {
     sender->writeDatagram((char *)&pack,sizeof(Pack),QHostAddress::Broadcast,port_broadcast);

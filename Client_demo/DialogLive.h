@@ -25,8 +25,10 @@ private slots:
     void on_btn_close_clicked();
     void onReadyRead();
     void onReadyReadServer();
+    void on_btn_send_clicked();
+
 signals:
-    void sigWrite(int type,User user);//向服务器发自己的广播port
+    void sigWrite(int type,User user);//向上一级界面发送数据对象
 
 private:
     Ui::DialogLive *ui;

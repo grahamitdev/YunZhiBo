@@ -10,6 +10,7 @@
 #define TYPE_LOG_SUCCESS 7
 #define TYPE_PORT 8
 #define TYPE_PORTS 9
+#define TYPE_CREATEROOM 10
 
 typedef struct packet
 {

@@ -1,3 +1,4 @@
+/***********这个类里的所有方法都在thread线程里执行，不影响其他客户端*********/
 #include "ClientSocket.h"
 #include <QDebug>
 #include <SocketManager.h>
@@ -73,7 +74,12 @@ void ClientSocket::login(int type, QString name, QString passwd)
 //发弹幕
 void ClientSocket::barrage(int type, QString name, QString message)
 {
-    //发弹幕
+    //目前Udp发弹幕
+    Pack pack;
+    pack.type = TYPE_MSG;
+    strcpy(pack.name,name.toLocal8Bit().data());
+    strcpy(pack.message,message.toLocal8Bit().data());
+    emit sigSendPortByBroad(pack);//临时借用一下全局广播
 }
 //Tcp接收UDP广播的PORT口
 void ClientSocket::receiveBroadPort(int type, QString name, unsigned short port)
@@ -85,7 +91,8 @@ void ClientSocket::receiveBroadPort(int type, QString name, unsigned short port)
     Pack pack;
     pack.type=TYPE_PORT;
     strcpy(pack.info,"服务器已收录广播port,即将分发");
-    emit sigWriteToClient(socket,pack);
+    emit sigWriteToClient(socket,pack);//Tcp
+
     list<User> ports = bm->getPorts();
     list<User>::iterator it;
     for(it=ports.begin();it!=ports.end();++it)
@@ -126,6 +133,8 @@ void ClientSocket::onReadyRead()
     case TYPE_PORT:
         receiveBroadPort(type,name,port);
         break;
+    case TYPE_CREATEROOM:
+        createRoom(type,name,info);
     default:
         break;
     }

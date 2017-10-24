@@ -19,9 +19,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = 0);    
     ~MainWindow();
-private slots:
+private slots:    
     void onError(QAbstractSocket::SocketError socketError);
     void on_btn_send_clicked();
     void onReadyRead();
@@ -30,6 +30,8 @@ private slots:
     void on_btn_login_clicked();
     void onSigWrite(int type,User user);
     void on_btn_backPasswd_clicked();
+signals:
+    void sigToWidgetUser(int type,User user);//向WidgetUser界面发信号
 
 private:
     Ui::MainWindow *ui;    

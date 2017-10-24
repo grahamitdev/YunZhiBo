@@ -33,7 +33,8 @@ SOURCES += \
     DialogLive.cpp \
     WidgetLive.cpp \
     WidgetUser.cpp \
-    WidgetLook.cpp
+    WidgetLook.cpp \
+    RoomManager.cpp
 
 HEADERS += \
         MainWindow.h \
@@ -43,7 +44,8 @@ HEADERS += \
     DialogLive.h \
     WidgetLive.h \
     WidgetUser.h \
-    WidgetLook.h
+    WidgetLook.h \
+    RoomManager.h
 
 FORMS += \
         MainWindow.ui \

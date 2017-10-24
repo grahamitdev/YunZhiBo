@@ -23,8 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ip = "127.0.0.1";
-    port = 8888;
-    port_broadcast = 10000;
+    port = 8888;//服务器Tcp端口
+    port_broadcast = 10000;//服务器全局广播端口
     server = new QTcpServer(this);
     sender = new QUdpSocket(this);
     SocketManager *sm = SocketManager::getInstance();
@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //主线程从此刻开始监听SocketManager的sigWrite(QTcpSocket *socket,const char *data,int len)轰炸信号
     //connect(sm,SIGNAL(sigWrite(QTcpSocket*,const char*,int)),this,SLOT(onSigWrite(QTcpSocket*,const char*,int)));
 
-    qRegisterMetaType<Pack>("Pack");
+    qRegisterMetaType<Pack>("Pack");//注册Pack
 
 
     connect(server,SIGNAL(newConnection()),this,SLOT(onNewConnection()));
@@ -101,22 +101,30 @@ void MainWindow::onNewConnection()
     QString ip = client->peerAddress().toString();
     QString port = QString::number(client->peerPort());
     ui->te_debug->append("IP:"+ip+" PORT:"+port+" connected");//show套接字信息
-
+    //保存在线用户socket,用于Tcp轮发重要信息
+    //此时保存的socket只代表一个客户端登录界面，不代表任何用户
+    //这个套接字并没有什么作用，用户登陆成功后，再保存套接字有用
     SocketManager *sm = SocketManager::getInstance();
     sm->addSocket(client);//此处获取单例对象只是为了压一个套接字进去，没有别的作用
+
 
     ClientSocket *cs = new ClientSocket(client);//socket找cs作代理
     //有了deleterLater()是否需要手动释放,没有deleterLater()是否需要手动释放
     QThread *thread = new QThread(this);
     //主线程从此刻开始监听cs对象从thread线程中发出的sigWrite(QTcpSocket*,const char*,int)信号
 
+    //主线程往客户端发数据的出口
     connect(cs,SIGNAL(sigWriteToClient(QTcpSocket*,Pack)),this,SLOT(onSigWriteToClient(QTcpSocket*,Pack)));
     connect(cs,SIGNAL(sigSendPortByBroad(Pack)),this,SLOT(onSigSendPortByBroad(Pack)));
+
+    //监听客户端登录界面有没有被关了
+    connect(client,SIGNAL(disconnected()),cs,SLOT(onDisConnected()));//来不及执行
     connect(client,SIGNAL(disconnected()),cs,SLOT(deleteLater()));//主线程监听socket脱离信号
     connect(client,SIGNAL(disconnected()),thread,SLOT(quit()));//主线程监听socket脱离信号
     connect(client,SIGNAL(disconnected()),this,SLOT(onDisconnected()));//主线程监听socket脱离信号
     cs->moveToThread(thread);
     thread->start();
+
 
     //thread线程执行后(exec())，这个onNewConnection()也就结束了
     //但是和client、cs相关的信号主线程还是一直在监听
@@ -136,7 +144,7 @@ void MainWindow::onNewConnection()
 //Tcp回复单个客户端的操作结果
 void MainWindow::onSigWriteToClient(QTcpSocket *socket, Pack pack)
 {
-    ui->te_debug->append("MainThread receive thread signal:"+ QString(pack.info));
+    ui->te_debug->append("MainThread receive thread signal:"+ QString(QString::fromLocal8Bit(pack.info)));
     socket->write((char *)&pack,sizeof(Pack));
     ui->te_debug->append("MainThread has forward pack");
 }
@@ -144,7 +152,16 @@ void MainWindow::onSigWriteToClient(QTcpSocket *socket, Pack pack)
 void MainWindow::onSigSendPortByBroad(Pack pack)
 {
     sender->writeDatagram((char *)&pack,sizeof(Pack),QHostAddress::Broadcast,port_broadcast);
-    ui->te_debug->append("send a Udp packet");
+    switch (pack.type) {
+    case TYPE_PORTS:
+        ui->te_debug->append("send a Udp packet:BroadCast Port");
+        break;
+    case TYPE_MSG:
+        ui->te_debug->append("send a Udp packet:Message");
+        break;
+    default:
+        break;
+    }
 }
 
 
@@ -152,7 +169,8 @@ void MainWindow::onSigSendPortByBroad(Pack pack)
 //主线程监听到套接字脱离信号
 void MainWindow::onDisconnected()
 {
-    ui->te_debug->append("disconnected");
+    ui->te_debug->append("one disconnected");
+
 }
 
 

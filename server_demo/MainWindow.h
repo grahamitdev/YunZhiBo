@@ -32,8 +32,8 @@ private:
     QString ip;
     unsigned short int port;
     unsigned short int port_broadcast;
-    QTcpServer *server;    
-    QUdpSocket *sender;
+    QTcpServer *server;
+    QUdpSocket *sender;//全局广播：发新主播name+port
 };
 
 #endif // MAINWINDOW_H

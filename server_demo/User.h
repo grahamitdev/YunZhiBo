@@ -5,10 +5,11 @@
 class User
 {
 public:
+    User();
     User(QString name,QString passwd,QString question,QString answer,int points);
 
     User(int type,QString name,QString passwd,QString question,QString answer);
-    User(int type, QString name, QString str);
+    User(int type, QString name, QString str);//密码,弹幕,创建房间
     User(int type,QString info);
     User(int type,QString name,unsigned short int port);
 
@@ -21,6 +22,16 @@ public:
     QString getInfo();
     unsigned short int getPort();
     int getPoints();
+
+    void setType(int);
+    void setName(QString name);
+    void setPasswd(QString passwd);
+    void setQuestion(QString question);
+    void setAnswer(QString answer);
+    void setMessage(QString message);
+    void setInfo(QString info);
+    void setPort(unsigned short int port);
+    void setPoints(int points);
 private:
     int type;
     QString name;//用户名

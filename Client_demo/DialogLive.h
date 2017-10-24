@@ -24,7 +24,7 @@ private slots:
     void on_btn_stop_clicked();
     void on_btn_close_clicked();
     void onReadyRead();
-    void onReadyReadServer();
+
     void on_btn_send_clicked();
 
 signals:
@@ -33,11 +33,10 @@ signals:
 private:
     Ui::DialogLive *ui;
     QCamera *camera;
-    unsigned short int port;
-    unsigned short int portServer;
+    unsigned short int port;    
     QUdpSocket *sender;
     QUdpSocket *receiver;
-    QUdpSocket *receiverServer;
+
 };
 
 #endif // DIALOGLIVE_H

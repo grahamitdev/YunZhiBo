@@ -1,5 +1,10 @@
 #include "User.h"
 #include "Packet.h"
+User::User()
+{
+
+}
+
 User::User(QString name, QString passwd, QString question, QString answer, int points)
     :name(name),passwd(passwd),question(question),answer(answer),points(points)
 {
@@ -85,4 +90,49 @@ unsigned short int User::getPort()
 int User::getPoints()
 {
     return points;
+}
+
+void User::setType(int type)
+{
+    this->type = type;
+}
+
+void User::setName(QString name)
+{
+    this->name = name;
+}
+
+void User::setPasswd(QString passwd)
+{
+    this->passwd = passwd;
+}
+
+void User::setQuestion(QString question)
+{
+    this->question = question;
+}
+
+void User::setAnswer(QString answer)
+{
+    this->answer = answer;
+}
+
+void User::setMessage(QString message)
+{
+    this->message = message;
+}
+
+void User::setInfo(QString info)
+{
+    this->info = info;
+}
+
+void User::setPort(unsigned short int port)
+{
+    this -> port = port;
+}
+
+void User::setPoints(int points)
+{
+    this->points = points;
 }

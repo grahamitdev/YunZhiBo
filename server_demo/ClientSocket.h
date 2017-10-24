@@ -19,12 +19,16 @@ public:
     void changePasswd(int type,QString,QString passwd,QString question,QString answer);
     void goBackPasswd(int type,QString,QString passwd,QString question,QString answer);
     void receiveBroadPort(int type,QString,unsigned short int port);
+    void createRoom(int type,QString name,QString info);
+    void askForPorts(int type);
+
 
 signals:    
     void sigWriteToClient(QTcpSocket *socket,Pack pack);
     void sigSendPortByBroad(Pack pack);//全局广播
 public slots:
     void onReadyRead();
+    void onDisConnected();
 private:
     QTcpSocket *socket;
 };

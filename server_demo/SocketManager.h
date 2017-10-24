@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QTcpSocket>
-#include <vector>
+#include <list>
 using namespace std;
 class SocketManager : public QObject
 {
@@ -12,6 +12,7 @@ public:
     static SocketManager *getInstance();
     void addSocket(QTcpSocket *socket);//对外接口
     void sendDataToAll(const char *data, int len);//对外接口
+    list<QTcpSocket *> getSockets();
 signals:
     void sigWrite(QTcpSocket *socket,const char *data,int len);
 public slots:
@@ -19,7 +20,7 @@ public slots:
 private:
     static SocketManager *instance;
     explicit SocketManager(QObject *parent = nullptr);
-    vector<QTcpSocket *> sockets;
+    list<QTcpSocket *> sockets;
 
 };
 

@@ -11,6 +11,11 @@
 #define TYPE_PORT 8
 #define TYPE_PORTS 9
 #define TYPE_CREATEROOM 10
+#define TYPE_DISCONN 11
+#define TYPE_LOGOFF 12
+#define TYPE_INROOM 13
+#define TYPE_OUTROOM 14
+#define TYPE_ROOMMEMBER 15
 
 typedef struct packet
 {

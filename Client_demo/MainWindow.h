@@ -21,6 +21,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);    
     ~MainWindow();
+    void closeEvent(QCloseEvent *event);
 private slots:    
     void onError(QAbstractSocket::SocketError socketError);
     void on_btn_send_clicked();
@@ -30,15 +31,16 @@ private slots:
     void on_btn_login_clicked();
     void onSigWrite(int type,User user);
     void on_btn_backPasswd_clicked();
+
 signals:
     void sigToWidgetUser(int type,User user);//向WidgetUser界面发信号
 
 private:
     Ui::MainWindow *ui;    
-    DialogRegist *dialogRegist;
-    WidgetUser *widgetUser;
-    DialogLive *dialogLive;
-    WidgetLive *widgetLive;
+    DialogRegist *dialogRegist;//注册
+    WidgetUser *widgetUser;//用户
+//    DialogLive *dialogLive;
+//    WidgetLive *widgetLive;
 
 
     QString ip;

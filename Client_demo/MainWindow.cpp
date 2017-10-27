@@ -6,11 +6,20 @@
 #include <QDebug>
 #include <string.h>
 #include "Packet.h"
+#include <QRegExp>
+#include <QRegExpValidator>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);    
+    //用户名正则
+    QRegExp regExpName("[0-9A-Za-z]{10}");//输入限定，即正则表达式，括号内的字符串是允许输入的内容
+    QRegExpValidator* validatorName = new QRegExpValidator(regExpName,this);    //形成输入规则
+    ui->le_name->setValidator(validatorName);
+    //密码正则
+    QRegExp acNumRE_passwd("[0-9]{10}");//密码0~9 10位
+    ui->le_passwd->setValidator(new QRegExpValidator(acNumRE_passwd, this));
     //注册窗口
     dialogRegist = new DialogRegist(this);
     dialogRegist->setWindowModality(Qt::ApplicationModal);
@@ -20,13 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(widgetUser,SIGNAL(sigWrite(int,User)),this,SLOT(onSigWrite(int,User)));//收子
     connect(this,SIGNAL(sigToWidgetUser(int,User)),//发子
             widgetUser,SLOT(onSigToWidgetUser(int,User)));
-//    //直播窗口，可能不在这里创建
-//    dialogLive = new DialogLive(this);
-//    dialogLive ->setWindowModality(Qt::ApplicationModal);
-//    connect(dialogLive,SIGNAL(sigWrite(int,User)),this,SLOT(onSigWrite(int,User)));
 
-    //测试
-    widgetLive = new WidgetLive();
+
     //创建套接字
     ip = "127.0.0.1";
     port = 8888;//服务器套接字端口号
@@ -44,9 +48,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;
-    delete widgetLive;//直播
+    delete ui;    
     delete widgetUser;//用户
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    //客户端彻底退出之前发一个退出包给服务器
+    User user;
+    int type = TYPE_DISCONN;
+    user.setType(TYPE_DISCONN);
+    onSigWrite(type,user);
 }
 
 
@@ -66,6 +78,12 @@ void MainWindow::on_btn_send_clicked()
     //发弹幕现在放到直播界面去获取
 }
 
+/*
+ * 函数名：onReadyRead
+ * 参数：void
+ * 返回值：void
+ * 功能：监听服务器的数据包，解析包
+ */
 void MainWindow::onReadyRead()
 {
     Pack pack;
@@ -95,6 +113,7 @@ void MainWindow::onReadyRead()
         //QMessageBox::information(this,"登录",pack.info);
         ui->textEdit->append(info);
         this->hide();//隐藏登录界面
+
         widgetUser->show();//打开用户界面
         //打开用户界面后，发一个包给服务器，索要当前所有的房间信息
         //这套系统设计巧妙的地方
@@ -117,7 +136,7 @@ void MainWindow::onReadyRead()
         user.setType(type);
         user.setInfo(info);
         user.setPort(port);
-        sigToWidgetUser(type,user);
+        sigToWidgetUser(type,user);        
         break;
     case TYPE_PORTS://接收索要的房间信息
         ui->textEdit->append(info);
@@ -125,7 +144,16 @@ void MainWindow::onReadyRead()
         user.setName(name);
         user.setPort(port);
         sigToWidgetUser(type,user);//发给Widgetuser
-
+        break;
+    case TYPE_MSG:
+        user.setType(type);
+        user.setName(name);
+        user.setMessage(message);
+        sigToWidgetUser(type,user);
+        break;
+    case TYPE_ROOMMEMBER:
+        user.setName(name);
+        sigToWidgetUser(type,user);
     default:
         break;
     }
@@ -139,7 +167,7 @@ void MainWindow::on_btn_reg_clicked()
 
 
 void MainWindow::on_btn_login_clicked()
-{
+{    
     int type = TYPE_LOG;
     QString name = ui->le_name->text();
     QString passwd = ui->le_passwd->text();
@@ -148,8 +176,12 @@ void MainWindow::on_btn_login_clicked()
     widgetUser->setName(name);//把登陆时的用户名传给后面的菜单
 }
 
-
-
+/*
+ * 函数名：onSigWrite
+ * 参数：int type, User user
+ * 返回值：void
+ * 功能：监听子界面的信号，集中转发各界面的数据包
+ */
 void MainWindow::onSigWrite(int type, User user)
 {
     Pack pack;
@@ -174,6 +206,7 @@ void MainWindow::onSigWrite(int type, User user)
         pack.type = type;
         strcpy(pack.name,user.getName().toLocal8Bit().data());
         strcpy(pack.message,user.getMessage().toLocal8Bit().data());
+        pack.port = user.getPort();
         socket->write((char *)&pack,sizeof(Pack));
         ui->textEdit->append("弹幕消息已发往服务器");
         break;
@@ -196,6 +229,31 @@ void MainWindow::onSigWrite(int type, User user)
         socket->write((char *)&pack,sizeof(Pack));
         ui->textEdit->append("索要房间信息已发往服务器");
         break;
+    case TYPE_DISCONN:
+        pack.type = type;
+        socket->write((char *)&pack,sizeof(Pack));
+        ui->textEdit->append("断开套接字请求已发往服务器");
+        break;
+    case TYPE_LOGOFF:
+        pack.type = type;
+        strcpy(pack.name,user.getName().toLocal8Bit().data());
+        socket->write((char *)&pack,sizeof(Pack));
+        ui->textEdit->append("下线请求已发往服务器");        
+        break;
+    case TYPE_INROOM:
+        pack.type = type;
+        strcpy(pack.name,user.getName().toLocal8Bit().data());
+        pack.port = user.getPort();
+        socket->write((char *)&pack,sizeof(Pack));
+        ui->textEdit->append("加入房间请求已发往服务器");
+        break;
+    case TYPE_OUTROOM:
+        pack.type = type;
+        strcpy(pack.name,user.getName().toLocal8Bit().data());
+        pack.port = user.getPort();
+        socket->write((char *)&pack,sizeof(Pack));
+        ui->textEdit->append("退出房间请求已发往服务器");
+        break;
 
     default:
         break;
@@ -209,6 +267,5 @@ void MainWindow::on_btn_log_clicked()
 //找回密码
 void MainWindow::on_btn_backPasswd_clicked()
 {
-    this->hide();
-    widgetLive->show();
+
 }

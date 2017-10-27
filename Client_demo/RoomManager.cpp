@@ -11,6 +11,8 @@ RoomManager *RoomManager::getInstance()
     return instance;
 }
 
+
+
 void RoomManager::addRoom(User user)
 {
     users.push_back(user);

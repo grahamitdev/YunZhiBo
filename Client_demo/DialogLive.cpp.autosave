@@ -156,7 +156,7 @@ void DialogLive::onVideoChanged(QVideoFrame curFrame)
             {
                 pack.isLastPack = true;
                 //pack.packTaken = unitBytes - writBytes + byteCount;
-                pack.packTaken = writBytes - byteCount;
+                pack.packTaken = writBytes - byteCount;//<255
                 //255*n-N
             }
             else

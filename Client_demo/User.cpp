@@ -92,6 +92,11 @@ int User::getPoints()
     return points;
 }
 
+QTcpSocket *User::getSocket()
+{
+    return socket;
+}
+
 void User::setType(int type)
 {
     this->type = type;
@@ -136,3 +141,10 @@ void User::setPoints(int points)
 {
     this->points = points;
 }
+
+void User::setSocket(QTcpSocket *socket)
+{
+    this->socket = socket;
+}
+
+

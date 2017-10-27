@@ -21,8 +21,9 @@ public:
     explicit WidgetUser(QWidget *parentWidget, QWidget *parent = 0);
     ~WidgetUser();
     void setName(QString name);
-    //void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event);
     void flushRoom();
+    void *getParentWidget();
 
 
 private slots:
@@ -36,14 +37,16 @@ private slots:
 
 signals:
     void sigWrite(int type,User user);//发父
+    void sigToWidgetLook(int type,User user);//发WidgetLook
 
 private:
     Ui::WidgetUser *ui;
     QString QName;
+    unsigned short int port;
     QWidget *parentWidget;
-    DialogLive *dialogLive;
-    WidgetLook *widgetLook;
-    //接收服务器的广播放在这个用户界面，不放在登录主界面
+    DialogLive *dialogLive;//主播直播界面
+    WidgetLook *widgetLook;//观众观看界面
+    //接收服务器的大广播放在这个用户界面，不放在登录主界面
     unsigned short int portServer;
     QUdpSocket *receiverServer;//接收服务器大广播
 
@@ -52,8 +55,7 @@ private:
 private:
     QStandardItemModel *roomItemModel;
 private slots:
-    void itemClicked(QModelIndex index);
-    void itemDoubleClicked(QModelIndex index);
+    void itemClicked(QModelIndex index);    
     void on_btn_flush_clicked();
     void timerSingleClick();//定时器事件，处理单机任务
 public:

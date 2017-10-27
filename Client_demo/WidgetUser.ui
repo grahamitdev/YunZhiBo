@@ -97,7 +97,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tab">
           <attribute name="title">
@@ -209,7 +209,7 @@
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_9">
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_8">
+            <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,0,0">
              <item>
               <widget class="QGroupBox" name="groupBox_2">
                <property name="title">

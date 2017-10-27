@@ -47,6 +47,11 @@ User::User(int type, QString name, unsigned short port)
 
 }
 
+bool User::operator <(const User &user) const
+{
+    return this->getPort()<user.getPort();
+}
+
 int User::getType()
 {
     return type;
@@ -82,7 +87,7 @@ QString User::getInfo()
     return info;
 }
 
-unsigned short int User::getPort()
+unsigned short int User::getPort() const
 {
     return port;
 }
@@ -90,6 +95,11 @@ unsigned short int User::getPort()
 int User::getPoints()
 {
     return points;
+}
+
+QTcpSocket *User::getSocket()
+{
+    return socket;
 }
 
 void User::setType(int type)
@@ -136,3 +146,10 @@ void User::setPoints(int points)
 {
     this->points = points;
 }
+
+void User::setSocket(QTcpSocket *socket)
+{
+    this->socket = socket;
+}
+
+

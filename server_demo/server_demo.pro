@@ -33,7 +33,9 @@ SOURCES += \
     User.cpp \
     UserDao.cpp \
     UserDaoImp.cpp \
-    BroadPortManager.cpp
+    BroadPortManager.cpp \
+    OnlineUserManager.cpp \
+    RoomManager.cpp
 
 HEADERS += \
     Log.h \
@@ -45,7 +47,9 @@ HEADERS += \
     UserDao.h \
     UserDaoImp.h \
     Packet.h \
-    BroadPortManager.h
+    BroadPortManager.h \
+    OnlineUserManager.h \
+    RoomManager.h
 
 FORMS += \
         mainwindow.ui

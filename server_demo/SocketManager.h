@@ -1,3 +1,4 @@
+/*****************这个单例只保存客户端套接字，没有用户信息,可用于统计当前连接的客户端设备数********************/
 #ifndef SOCKETMANAGER_H
 #define SOCKETMANAGER_H
 
@@ -11,6 +12,7 @@ class SocketManager : public QObject
 public:
     static SocketManager *getInstance();
     void addSocket(QTcpSocket *socket);//对外接口
+    void deleteSocket(QTcpSocket *socket);
     void sendDataToAll(const char *data, int len);//对外接口
     list<QTcpSocket *> getSockets();
 signals:

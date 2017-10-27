@@ -1,6 +1,7 @@
 #ifndef USER_H
 #define USER_H
 #include <QString>
+#include <QTcpSocket>
 
 class User
 {
@@ -22,6 +23,7 @@ public:
     QString getInfo();
     unsigned short int getPort();
     int getPoints();
+    QTcpSocket *getSocket();
 
     void setType(int);
     void setName(QString name);
@@ -32,6 +34,7 @@ public:
     void setInfo(QString info);
     void setPort(unsigned short int port);
     void setPoints(int points);
+    void setSocket(QTcpSocket *socket);
 private:
     int type;
     QString name;//用户名
@@ -42,6 +45,7 @@ private:
     QString info;
     unsigned short int port;
     int points;//积分
+    QTcpSocket *socket;
 };
 
 #endif // USER_H

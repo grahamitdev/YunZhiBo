@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui
+QT       += network
 QT       += multimedia
 QT       += multimediawidgets
 
@@ -34,7 +35,10 @@ SOURCES += \
     WidgetLive.cpp \
     WidgetUser.cpp \
     WidgetLook.cpp \
-    RoomManager.cpp
+    RoomManager.cpp \
+    VideoSurface.cpp \
+    ReceiveAudioThread.cpp \
+    MyBarrage.cpp
 
 HEADERS += \
         MainWindow.h \
@@ -45,7 +49,10 @@ HEADERS += \
     WidgetLive.h \
     WidgetUser.h \
     WidgetLook.h \
-    RoomManager.h
+    RoomManager.h \
+    VideoSurface.h \
+    ReceiveAudioThread.h \
+    MyBarrage.h
 
 FORMS += \
         MainWindow.ui \

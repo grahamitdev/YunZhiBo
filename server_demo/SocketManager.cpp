@@ -12,8 +12,20 @@ SocketManager *SocketManager::getInstance()
 
 void SocketManager::addSocket(QTcpSocket *socket)
 {
-    sockets.push_back(socket);
-    qDebug()<<"insert one socket into SocketManager";
+    sockets.push_back(socket);    
+}
+
+void SocketManager::deleteSocket(QTcpSocket *socket)
+{
+    list<QTcpSocket *>::iterator it;
+    for(it = sockets.begin();it!=sockets.end();++it)
+    {
+        if(socket==*it)
+        {
+            sockets.erase(it);            
+            return;
+        }
+    }
 }
 
 void SocketManager::sendDataToAll(const char *data,int len)

@@ -80,7 +80,25 @@
         </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0">
+        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1,1,1,1">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
+           <item>
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>当前房间：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="lb_room_info">
+             <property name="text">
+              <string>房间号：主播名：</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
          <item>
           <widget class="Line" name="line_2">
            <property name="orientation">
@@ -89,7 +107,16 @@
           </widget>
          </item>
          <item>
-          <widget class="QVideoWidget" name="camera" native="true"/>
+          <widget class="QLabel" name="lb_look">
+           <property name="styleSheet">
+            <string notr="true">font: 18pt &quot;黑体&quot;;
+background-color: rgb(161, 161, 161)
+</string>
+           </property>
+           <property name="text">
+            <string>主播正赶来的路上！</string>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="Line" name="line">
@@ -163,12 +190,16 @@
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="le_msg"/>
+              <widget class="QLineEdit" name="le_msg">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QPushButton" name="btn_send">
                <property name="text">
-                <string>发送弹幕</string>
+                <string>发送</string>
                </property>
                <property name="flat">
                 <bool>false</bool>
@@ -186,17 +217,27 @@
          <item>
           <widget class="QTabWidget" name="tabWidget">
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="chat">
             <attribute name="title">
              <string>msg</string>
             </attribute>
+            <layout class="QVBoxLayout" name="verticalLayout_7">
+             <item>
+              <widget class="QTextEdit" name="te_msg"/>
+             </item>
+            </layout>
            </widget>
            <widget class="QWidget" name="member">
             <attribute name="title">
              <string>member</string>
             </attribute>
+            <layout class="QVBoxLayout" name="verticalLayout_8">
+             <item>
+              <widget class="QTextEdit" name="te_mem"/>
+             </item>
+            </layout>
            </widget>
           </widget>
          </item>
@@ -226,14 +267,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QVideoWidget</class>
-   <extends>QWidget</extends>
-   <header>QVideoWidget.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="pic.qrc"/>
  </resources>
